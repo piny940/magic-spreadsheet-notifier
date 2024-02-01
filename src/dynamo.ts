@@ -52,7 +52,7 @@ export const listRecruits = async () => {
   if (!response.Items) return []
   return unmarshal<Recruit[]>(response.Items)
 }
-export const putRecruit = async (recruit: Recruit) => {
+export const saveRecruit = async (recruit: Recruit) => {
   const command = new PutItemCommand({
     TableName: 'recruits',
     Item: marshal(recruit),
