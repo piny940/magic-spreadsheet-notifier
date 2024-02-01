@@ -1,23 +1,30 @@
-import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb'
+import {
+  DynamoDBClient,
+  PutItemCommand,
+  ScanCommand,
+} from '@aws-sdk/client-dynamodb'
 import { Recruit } from './types'
 
 const client = new DynamoDBClient({ region: 'ap-southeast-2' })
 
 const marshal = (item: any) => {
-  const result: any = {}
+  const marshalRec = (item: any): any => {
+    const result: any = {}
 
-  for (const key of Object.keys(item)) {
-    if (typeof item[key] === 'number') result[key] = { N: item[key].toString() }
-    else if (typeof item[key] === 'string') result[key] = { S: item[key] }
-    else if (typeof item[key] === 'boolean') result[key] = { BOOL: item[key] }
-    else if (Array.isArray(item[key]))
-      result[key] = { L: item[key].map(marshal) }
-    else if (item[key] instanceof Date)
-      result[key] = { S: item[key].toISOString() }
-    else if (item[key] === null) result[key] = { NULL: true }
-    else {
-      result[key] = { M: marshal(item[key]) }
+    if (typeof item === 'number') return { N: item.toString() }
+    if (typeof item === 'string') return { S: item }
+    if (typeof item === 'boolean') return { BOOL: item }
+    if (Array.isArray(item)) return { L: item.map(marshalRec) }
+    if (item instanceof Date) return { S: item.toISOString() }
+    if (item === null) return { NULL: true }
+    for (const key of Object.keys(item)) {
+      result[key] = { M: marshalRec(item[key]) }
     }
+    return result
+  }
+  const result: any = {}
+  for (const key of Object.keys(item)) {
+    result[key] = marshalRec(item[key])
   }
   return result
 }
@@ -42,5 +49,14 @@ export const listRecruits = async () => {
   const command = new ScanCommand({ TableName: 'recruits' })
   const response = await client.send(command)
   if (!response.Items) return []
+  console.log(unmarshal<Recruit[]>(response.Items))
   return unmarshal<Recruit[]>(response.Items)
+}
+export const putRecruit = async (recruit: Recruit) => {
+  const command = new PutItemCommand({
+    TableName: 'recruits',
+    Item: marshal(recruit),
+  })
+  const response = await client.send(command)
+  return response
 }
