@@ -14,10 +14,10 @@ const (
 )
 
 type Recruit struct {
-	ID               uint      `gorm:"primary_key"`
-	Name             string    `gorm:"not null; type:varchar(100)"`
-	RecruitStartDate time.Time `gorm:"type:timestamp"`
-	RecruitEndDate   time.Time `gorm:"type:timestamp"`
+	ID               uint `dynamo:"id"`
+	Name             string
+	RecruitStartDate time.Time
+	RecruitEndDate   time.Time
 	Technologies     []string
 	Link             string
 	Kind             RecruitKind
@@ -30,7 +30,7 @@ type Recruit struct {
 	Comment          string
 }
 
-type RecruitRepo interface {
-	List() ([]Recruit, error)
-	Create(*Recruit) error
+type IRecruitRepo interface {
+	List() ([]*Recruit, error)
+	Create(*Recruit) (*Recruit, error)
 }
