@@ -1,4 +1,5 @@
 import {
+  DeleteItemCommand,
   DynamoDBClient,
   PutItemCommand,
   ScanCommand,
@@ -49,13 +50,20 @@ export const listRecruits = async () => {
   const command = new ScanCommand({ TableName: 'recruits' })
   const response = await client.send(command)
   if (!response.Items) return []
-  console.log(unmarshal<Recruit[]>(response.Items))
   return unmarshal<Recruit[]>(response.Items)
 }
 export const putRecruit = async (recruit: Recruit) => {
   const command = new PutItemCommand({
     TableName: 'recruits',
     Item: marshal(recruit),
+  })
+  const response = await client.send(command)
+  return response
+}
+export const deleteRecruit = async (id: number) => {
+  const command = new DeleteItemCommand({
+    TableName: 'recruits',
+    Key: { id: { N: id.toString() } },
   })
   const response = await client.send(command)
   return response
