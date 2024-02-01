@@ -1,4 +1,4 @@
-package db
+package infra
 
 import "magic-spreadsheet-notification/domain"
 

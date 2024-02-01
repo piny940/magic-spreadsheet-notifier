@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"magic-spreadsheet-notification/config"
-	"magic-spreadsheet-notification/db"
+	"magic-spreadsheet-notification/infra"
 )
 
 func main() {
@@ -14,5 +14,5 @@ func main() {
 
 	config.Init(*env)
 
-	db.Init(ctx)
+	infra.Init(ctx)
 }
