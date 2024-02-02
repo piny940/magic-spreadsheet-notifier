@@ -20,8 +20,8 @@ module MagicSpreadsheet
   def self.list
     items = []
     driver = WebDriver.driver
-    driver.get('https://deep-professor-e3c.notion.site/049ca5329bbc4493bc9f4f5b3727d027?v=3b000340195242b0bd4b0741063ec259')
-    sleep 6
+    driver.get(ENV.fetch('MAGIC_SPREADSHEET_URL', nil))
+    sleep ENV.fetch('MAGIC_SPREADSHEET_WAIT_TIME', 5).to_i
     begin
       rows = driver.find_elements(:css, '.notion-selectable.notion-page-block.notion-collection-item>.notion-table-view-row')
       rows.each do |row|
