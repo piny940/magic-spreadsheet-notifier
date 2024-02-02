@@ -3,6 +3,8 @@ require './src/firestore'
 require './src/magic'
 require './src/recruit'
 
+COLLECTION_PATH = ENV.fetch('FIRESTORE_COLLECTION_PATH', nil)
+
 def diff(current, desired)
   actions = []
   desired.each do |recruit|
@@ -32,16 +34,17 @@ end
 desired = MagicSpreadsheet.list
 
 firestore = Firestore.client
-current = firestore.col("spreadsheets/2023-summer/recruits").get.to_a
+current = firestore.col(COLLECTION_PATH).get.to_a
 
 actions = diff(current, desired)
+p actions
 firestore.batch do |b|
   actions.each do |action|
     if action[:action] == :create
       # batchだとcol.doc.setが使えない?
-      firestore.col("spreadsheets/2023-summer/recruits").doc.set(action[:data])
+      firestore.col(COLLECTION_PATH).doc.set(action[:data])
     else
-      b.delete("spreadsheets/2023-summer/recruits/#{action[:data]}")
+      b.delete("#{COLLECTION_PATH}/#{action[:data]}")
     end
   end
 end
