@@ -1,4 +1,4 @@
 require 'dotenv'
-if ENV.fetch('RACK_ENV', 'development') != 'production'
-  Dotenv.load(".env.#{ENV.fetch('RACK_ENV', 'development')}")
+if ENV.fetch('ENV', 'development') != 'production'
+  Dotenv.load(".env.#{ENV.fetch('ENV', 'development')}")
 end

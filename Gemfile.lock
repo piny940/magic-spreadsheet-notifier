@@ -78,6 +78,7 @@ GEM
     public_suffix (5.0.4)
     racc (1.7.3)
     rainbow (3.1.1)
+    rake (13.1.0)
     rbtree (0.4.6)
     regexp_parser (2.9.0)
     rexml (3.2.6)
@@ -122,6 +123,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv
   google-cloud-firestore (~> 2.14)
+  rake
   rubocop
   selenium-webdriver
   slack-ruby-client
