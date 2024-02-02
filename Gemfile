@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 
 gem 'selenium-webdriver'
 gem 'google-cloud-firestore', '~> 2.14'
+gem 'rake'
 
 group :development do
   gem 'dotenv'
