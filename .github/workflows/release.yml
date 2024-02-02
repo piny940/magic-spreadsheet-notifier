@@ -44,8 +44,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          context: .
-          file: ./Dockerfile
+          context: ./server
+          file: ./server/Dockerfile
           tags: |
             ghcr.io/piny940/magic-spreadsheet-notifier-server:1.0.${{ github.run_number }}
             ghcr.io/piny940/magic-spreadsheet-notifier-server:latest
