@@ -40,16 +40,16 @@ func (sc *slackController) Callback(c echo.Context) error {
 	)
 	if err != nil {
 		fmt.Println(err)
-		return c.String(http.StatusBadRequest, "Failed to get access token")
+		return c.Render(http.StatusBadRequest, "slacks/success", "Failed to get access token")
 	}
 
 	firestore, err := utils.GetFirestore(c.Request().Context())
 	if err != nil {
 		fmt.Println(err)
-		return c.String(http.StatusBadRequest, "Failed to store access token")
+		return c.Render(http.StatusBadRequest, "slacks/success", "Failed to store access token")
 	}
 	_, err = firestore.Collection("slack_teams").Doc(oauthRes.Team.ID).Set(c.Request().Context(), map[string]interface{}{
-		"Name":          oauthRes.Team.Name,
+		"name":          oauthRes.Team.Name,
 		"access_token":  oauthRes.AccessToken,
 		"scope":         oauthRes.Scope,
 		"refresh_token": oauthRes.RefreshToken,
@@ -57,8 +57,8 @@ func (sc *slackController) Callback(c echo.Context) error {
 	})
 	if err != nil {
 		fmt.Println(err)
-		return c.String(http.StatusBadRequest, "Failed to store access token")
+		return c.Render(http.StatusBadRequest, "slacks/success", "Failed to store access token")
 	}
 
-	return c.String(http.StatusOK, "Success!")
+	return c.Render(http.StatusOK, "slacks/success", "Success!")
 }
