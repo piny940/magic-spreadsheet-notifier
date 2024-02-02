@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"server/controllers"
+	"server/utils"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -17,6 +18,8 @@ func main() {
 	env := flag.String("e", "development", "set environment")
 	flag.Parse()
 	loadDotenv(*env)
+	utils.InitFirebase()
+
 	e := echo.New()
 	t := &Template{
 		templates: template.Must(template.ParseGlob("public/**/*.html")),

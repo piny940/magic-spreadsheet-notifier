@@ -2,25 +2,27 @@ package controllers
 
 import (
 	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 	"os"
+	"server/utils"
 
 	"github.com/labstack/echo/v4"
+	"github.com/slack-go/slack"
 )
 
-type slackController struct{}
+type slackController struct{ RedirectTo string }
 
 func NewSlackController() *slackController {
-	return &slackController{}
+	return &slackController{
+		RedirectTo: fmt.Sprintf("%s/slacks/callback", os.Getenv("SERVER_HOST")),
+	}
 }
 
 func (sc *slackController) NewSlack(c echo.Context) error {
 	url := fmt.Sprintf(
-		"https://slack.com/oauth/v2/authorize?scope=channels:read,chat:write&client_id=%s&redirect_uri=%s/slacks/callback",
+		"https://slack.com/oauth/v2/authorize?scope=channels:read,chat:write&client_id=%s&redirect_uri=%s",
 		os.Getenv("SLACK_CLIENT_ID"),
-		os.Getenv("SERVER_HOST"),
+		sc.RedirectTo,
 	)
 	return c.Render(http.StatusOK, "slacks/new", url)
 }
@@ -28,18 +30,35 @@ func (sc *slackController) NewSlack(c echo.Context) error {
 func (sc *slackController) Callback(c echo.Context) error {
 	code := c.QueryParam("code")
 	fmt.Println("code: ", code)
-	data := url.Values{
-		"code":          {code},
-		"client_id":     {os.Getenv("SLACK_CLIENT_ID")},
-		"client_secret": {os.Getenv("SLACK_CLIENT_SECRET")},
-	}
-	res, err := http.PostForm("https://slack.com/api/oauth.v2.access", data)
+	oauthRes, err := slack.GetOAuthV2ResponseContext(
+		c.Request().Context(),
+		new(http.Client),
+		os.Getenv("SLACK_CLIENT_ID"),
+		os.Getenv("SLACK_CLIENT_SECRET"),
+		code,
+		sc.RedirectTo,
+	)
 	if err != nil {
 		fmt.Println(err)
 		return c.String(http.StatusBadRequest, "Failed to get access token")
 	}
-	defer res.Body.Close()
-	b, err := io.ReadAll(res.Body)
-	fmt.Println(string(b))
+
+	firestore, err := utils.GetFirestore(c.Request().Context())
+	if err != nil {
+		fmt.Println(err)
+		return c.String(http.StatusBadRequest, "Failed to store access token")
+	}
+	_, err = firestore.Collection("slack_teams").Doc(oauthRes.Team.ID).Set(c.Request().Context(), map[string]interface{}{
+		"Name":          oauthRes.Team.Name,
+		"access_token":  oauthRes.AccessToken,
+		"scope":         oauthRes.Scope,
+		"refresh_token": oauthRes.RefreshToken,
+		"expires_in":    oauthRes.ExpiresIn,
+	})
+	if err != nil {
+		fmt.Println(err)
+		return c.String(http.StatusBadRequest, "Failed to store access token")
+	}
+
 	return c.String(http.StatusOK, "Success!")
 }

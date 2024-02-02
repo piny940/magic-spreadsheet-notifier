@@ -8,7 +8,22 @@ import (
 	firebase "firebase.google.com/go"
 )
 
-func InitFirestore(c context.Context) (*firestore.Client, error) {
+func InitFirebase() {
+	cred := os.Getenv("FIREBASE_JSON")
+	filename := "/tmp/firebase.json"
+	f, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", filename)
+	_, err = f.WriteString(cred)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func GetFirestore(c context.Context) (*firestore.Client, error) {
 	conf := &firebase.Config{ProjectID: os.Getenv("FIREBASE_PROJECT_ID")}
 	app, err := firebase.NewApp(c, conf)
 	if err != nil {
