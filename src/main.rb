@@ -2,6 +2,7 @@ require './src/config' # Load first
 require './src/firestore'
 require './src/magic'
 require './src/recruit'
+require './src/slack'
 
 COLLECTION_PATH = ENV.fetch('FIRESTORE_COLLECTION_PATH', nil)
 
@@ -31,20 +32,21 @@ def match_key(recruit)
   }
 end
 
-desired = MagicSpreadsheet.list
+# desired = MagicSpreadsheet.list
 
-firestore = Firestore.client
-current = firestore.col(COLLECTION_PATH).get.to_a
+# firestore = Firestore.client
+# current = firestore.col(COLLECTION_PATH).get.to_a
 
-actions = diff(current, desired)
-p actions
-firestore.batch do |b|
-  actions.each do |action|
-    if action[:action] == :create
-      # batchだとcol.doc.setが使えない?
-      firestore.col(COLLECTION_PATH).doc.set(action[:data])
-    else
-      b.delete("#{COLLECTION_PATH}/#{action[:data]}")
-    end
-  end
-end
+# actions = diff(current, desired)
+# firestore.batch do |b|
+#   actions.each do |action|
+#     if action[:action] == :create
+#       # batchだとcol.doc.setが使えない?
+#       firestore.col(COLLECTION_PATH).doc.set(action[:data])
+#     else
+#       b.delete("#{COLLECTION_PATH}/#{action[:data]}")
+#     end
+#   end
+# end
+
+SlackNotifier.broadcast('recruit list updated')
