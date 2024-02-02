@@ -25,10 +25,11 @@ func main() {
 		templates: template.Must(template.ParseGlob("public/**/*.html")),
 	}
 	e.Renderer = t
+	sc := controllers.NewSlackController()
+	e.GET("", sc.Index)
 	slack := e.Group("/slacks")
 	{
-		sc := controllers.NewSlackController()
-		slack.GET("/new", sc.NewSlack)
+		slack.GET("/new", sc.Index)
 		slack.GET("/callback", sc.Callback)
 	}
 

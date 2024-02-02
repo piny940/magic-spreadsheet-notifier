@@ -1,0 +1,48 @@
+{{define "slacks/index"}}
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<title>魔法のスプレッドシート更新通知</title>
+</head>
+<body>
+  <style>a.reset{color: inherit;text-decoration: inherit;} a.reset:hover{text-decoration: underline;}</style>
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid px-5">
+        <a class="navbar-brand fw-bold" href="#">Piny940</a>
+      </div>
+    </nav>
+  </header>
+  <main class="container pt-3 pb-5">
+    <h1 class="mb-3">魔法のスプレッドシート更新通知</h1>
+    <p>
+      <a href="https://magic-spreadsheets.pages.dev">魔法のスプレッドシート</a>
+      が更新されたときに通知が届くSlack Appを制作しました。
+    </p>
+    <p>
+      <a href="{{.}}" class="btn btn-primary btn-lg">Slack Appを追加</a>
+    </p>
+    <p class="py-4">
+      <img style="width:100%; max-width: 800px" src="https://i.gyazo.com/14c07137abf9db6df8e40b77e1ba4ddb.png" alt="魔法のスプレッドシート更新通知の画像">
+    </p>
+    <h2>備考</h2>
+    <p>制作: <a href="https://twitter.com/piny940">mikan</a></p>
+    <p>Github: <a href="https://github.com/piny940/magic-spreadsheet-notifier">https://github.com/piny940/magic-spreadsheet-notifier</a></p>
+  </main>
+  <footer class="footer text-white p-4 text-center bg-secondary">
+    <a href="https://github.com/piny940/magic-spreadsheet-notifier" class="reset">Issueを報告</a>
+    ｜
+    <a href="https://twitter.com/piny940" class="reset">お問い合わせ</a>
+    <br />
+    <small>
+      &copy; 2024
+      <a href="https://www.piny940.com" class="reset" target="_blank">Piny940</a>
+    </small>
+  </footer>
+</body>
+</html>
+{{end}}

@@ -18,13 +18,13 @@ func NewSlackController() *slackController {
 	}
 }
 
-func (sc *slackController) NewSlack(c echo.Context) error {
+func (sc *slackController) Index(c echo.Context) error {
 	url := fmt.Sprintf(
 		"https://slack.com/oauth/v2/authorize?scope=channels:read,chat:write&client_id=%s&redirect_uri=%s",
 		os.Getenv("SLACK_CLIENT_ID"),
 		sc.RedirectTo,
 	)
-	return c.Render(http.StatusOK, "slacks/new", url)
+	return c.Render(http.StatusOK, "slacks/index", url)
 }
 
 func (sc *slackController) Callback(c echo.Context) error {
