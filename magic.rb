@@ -1,14 +1,6 @@
 require './web_driver'
 require './recruit'
 
-RECRUIT_KINDS_MAP = {
-  'インターン' => RecruitKind::INTERNSHIP,
-  'ハッカソン' => RecruitKind::HACKATHON,
-  'イベント' => RecruitKind::EVENT,
-  '本選考' => RecruitKind::JOB,
-  'CTF' => RecruitKind::HACKATHON,
-  'Workshop' => RecruitKind::EVENT,
-}
 CELL_INDEX = {
   title: 1,
   recruit_start_date: 2,
@@ -43,6 +35,6 @@ module MagicSpreadsheet
     ensure
       driver.quit
     end
-    p items.map{ |item| Recruit.new(**item) }
+    items.map{ |item| Recruit.new(**item) }
   end
 end
