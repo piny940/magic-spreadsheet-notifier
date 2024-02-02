@@ -1,5 +1,5 @@
-require './web_driver'
-require './recruit'
+require './src/web_driver'
+require './src/recruit'
 
 CELL_INDEX = {
   title: 1,
