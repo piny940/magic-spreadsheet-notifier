@@ -1,18 +1,18 @@
 require 'slack-ruby-client'
-
-# Slack.configure do |config|
-#   config.token = ENV['SLACK_API_TOKEN']
-# end
+require './src/firestore'
 
 module SlackNotifier
   def self.broadcast(attachments)
-    client = Slack::Web::Client.new(token: ENV['SLACK_API_TOKEN'])
-    channels = client.conversations_list.channels.to_a
-    channels.filter(&:is_member).each do |channel|
-      client.chat_postMessage(
-        channel: channel.id,
-        attachments:
-      )
+    tokens = Firestore.client.collection('slack_teams').get.map{ |doc| doc.data[:access_token]}
+    tokens.each do |token|
+      client = Slack::Web::Client.new(token:)
+      channels = client.conversations_list.channels.to_a
+      channels.filter(&:is_member).each do |channel|
+        client.chat_postMessage(
+          channel: channel.id,
+          attachments:
+        )
+      end
     end
   end
 end
