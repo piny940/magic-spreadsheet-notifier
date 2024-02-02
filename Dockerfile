@@ -35,4 +35,4 @@ WORKDIR /app
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY . .
 
-CMD ["/bin/sh"]
+CMD ["bundle", "exec", ]
