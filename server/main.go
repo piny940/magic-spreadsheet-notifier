@@ -29,7 +29,6 @@ func main() {
 	e.GET("", sc.Index)
 	slack := e.Group("/slacks")
 	{
-		slack.GET("/new", sc.Index)
 		slack.GET("/callback", sc.Callback)
 	}
 
