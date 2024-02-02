@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
+	"io"
 	"os"
 	"server/controllers"
 
@@ -16,10 +18,15 @@ func main() {
 	flag.Parse()
 	loadDotenv(*env)
 	e := echo.New()
+	t := &Template{
+		templates: template.Must(template.ParseGlob("public/**/*.html")),
+	}
+	e.Renderer = t
 	slack := e.Group("/slacks")
 	{
 		sc := controllers.NewSlackController()
 		slack.GET("/new", sc.NewSlack)
+		slack.GET("/callback", sc.Callback)
 	}
 
 	e.Use(middleware.Logger())
@@ -34,4 +41,12 @@ func loadDotenv(env string) {
 			panic(err)
 		}
 	}
+}
+
+type Template struct {
+	templates *template.Template
+}
+
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
 }
