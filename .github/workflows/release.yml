@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  backend:
+  app:
     runs-on: ubuntu-latest
     steps:
       - name: Check out
@@ -27,3 +27,25 @@ jobs:
           tags: |
             ghcr.io/piny940/magic-spreadsheet-notifier:1.0.${{ github.run_number }}
             ghcr.io/piny940/magic-spreadsheet-notifier:latest
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: piny940
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          file: ./Dockerfile
+          tags: |
+            ghcr.io/piny940/magic-spreadsheet-notifier-server:1.0.${{ github.run_number }}
+            ghcr.io/piny940/magic-spreadsheet-notifier-server:latest
