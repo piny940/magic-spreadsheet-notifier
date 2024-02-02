@@ -1,8 +1,8 @@
 name: Build for Release
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 jobs:
   backend:
