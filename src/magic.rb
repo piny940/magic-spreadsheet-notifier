@@ -28,6 +28,10 @@ module MagicSpreadsheet
         item = {}
         CELL_INDEX.each do |k, v|
           cell = row.find_element(:css, ".notion-table-view-cell[data-col-index='#{v}']")
+          if k == :link && cell.text != ''
+            item[k] = cell.find_element(:css, 'a').attribute('href')
+            next
+          end
           item[k] = cell.text
         end
         items << item
