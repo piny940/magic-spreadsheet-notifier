@@ -2,6 +2,7 @@ require './src/config' # Load first
 require './src/firestore'
 require './src/magic'
 require './src/recruit'
+require './src/slack'
 
 COLLECTION_PATH = ENV.fetch('FIRESTORE_COLLECTION_PATH', nil)
 
@@ -37,7 +38,6 @@ firestore = Firestore.client
 current = firestore.col(COLLECTION_PATH).get.to_a
 
 actions = diff(current, desired)
-p actions
 firestore.batch do |b|
   actions.each do |action|
     if action[:action] == :create
@@ -47,4 +47,9 @@ firestore.batch do |b|
       b.delete("#{COLLECTION_PATH}/#{action[:data]}")
     end
   end
+end
+
+new_recruits = actions.filter{|a| a[:action] == :create}.map{|action| action[:data]}
+if new_recruits.length > 0
+  notify_recruits(actions)
 end
