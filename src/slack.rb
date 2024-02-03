@@ -1,19 +1,35 @@
 require 'slack-ruby-client'
 require './src/firestore'
+require './src/logger'
 
 module SlackNotifier
   def self.broadcast(attachments)
-    tokens = Firestore.client.collection('slack_teams').get.map{ |doc| doc.data[:access_token]}
-    tokens.each do |token|
-      client = Slack::Web::Client.new(token:)
-      channels = client.conversations_list.channels.to_a
-      channels.filter(&:is_member).each do |channel|
+    teams = Firestore.client.collection('slack_teams').get.map(&:data)
+    teams.each do |team|
+      client = Slack::Web::Client.new(token: team[:access_token])
+      channels = get_channles(client)
+      channels.each do |channel|
+        logger.info("Send to #{team[:name]}.#{channel.name}")
         client.chat_postMessage(
           channel: channel.id,
           attachments:
         )
       end
     end
+  end
+
+  def self.get_channles(client)
+    channels = []
+    cursor = nil
+    loop do
+      response = client.conversations_list(cursor:, limit: 1000, exclude_archived: true)
+      channels += response.channels
+      cursor = response.response_metadata.next_cursor
+      if cursor.nil? || cursor == ''
+        break
+      end
+    end
+    channels.to_a.filter(&:is_member)
   end
 end
 

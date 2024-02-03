@@ -1,4 +1,5 @@
 require './src/config' # Load first
+require './src/logger'
 require './src/firestore'
 require './src/magic'
 require './src/recruit'
@@ -38,6 +39,10 @@ firestore = Firestore.client
 current = firestore.col(COLLECTION_PATH).get.to_a
 
 actions = diff(current, desired)
+logger.info("Actions: #{actions}")
+
+# Firestoreに書き込む
+logger.info("Start Firestore.batch")
 firestore.batch do |b|
   actions.each do |action|
     if action[:action] == :create
@@ -49,6 +54,7 @@ firestore.batch do |b|
   end
 end
 
+# Slackに通知する
 new_recruits = actions.filter{|a| a[:action] == :create}.map{|action| action[:data]}
 if new_recruits.length > 0
   notify_recruits(actions)
