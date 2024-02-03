@@ -1,5 +1,6 @@
 require './src/web_driver'
 require './src/recruit'
+require './src/logger'
 
 CELL_INDEX = {
   title: 1,
@@ -18,6 +19,7 @@ CELL_INDEX = {
 }
 module MagicSpreadsheet
   def self.list
+    logger.info('Start MagicSpreadsheet.list')
     items = []
     driver = WebDriver.driver
     driver.get(ENV.fetch('MAGIC_SPREADSHEET_URL', nil))
@@ -39,6 +41,7 @@ module MagicSpreadsheet
     ensure
       driver.quit
     end
+    logger.info('End MagicSpreadsheet.list')
     items.map{ |item| Recruit.new(**item) }
   end
 end
