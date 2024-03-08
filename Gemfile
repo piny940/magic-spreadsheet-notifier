@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 # gem "rails"
 
 gem 'selenium-webdriver'
-gem 'google-cloud-firestore', '~> 2.14'
+gem 'google-cloud-firestore', '~> 2.15'
 gem 'rake'
 gem 'slack-ruby-client'
 
