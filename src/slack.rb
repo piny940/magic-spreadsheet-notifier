@@ -1,6 +1,7 @@
 require 'slack-ruby-client'
 require './src/firestore'
 require './src/logger'
+require './src/magic'
 
 module SlackNotifier
   def self.broadcast(attachments)
@@ -12,7 +13,7 @@ module SlackNotifier
         logger.info("Send to #{team[:name]}.#{channel.name}")
         client.chat_postMessage(
           channel: channel.id,
-          attachments:
+          attachments: attachments
         )
       end
     end
@@ -22,12 +23,10 @@ module SlackNotifier
     channels = []
     cursor = nil
     loop do
-      response = client.conversations_list(cursor:, limit: 1000, exclude_archived: true)
+      response = client.conversations_list(cursor: cursor, limit: 1000, exclude_archived: true)
       channels += response.channels
       cursor = response.response_metadata.next_cursor
-      if cursor.nil? || cursor == ''
-        break
-      end
+      break if cursor.nil? || cursor == ''
     end
     channels.to_a.filter(&:is_member)
   end
@@ -38,9 +37,8 @@ def color(data)
 end
 
 def key_value_pair(label, data)
-  if data.nil? || data == ''
-    return nil
-  end
+  return nil if data.nil? || data == ''
+
   {
     type: 'rich_text',
     elements: [
@@ -49,7 +47,7 @@ def key_value_pair(label, data)
         elements: [
           {
             type: 'text',
-            text: "#{label}",
+            text: label.to_s,
             style: {
               bold: true
             }
@@ -65,8 +63,8 @@ def key_value_pair(label, data)
 end
 
 def notify_recruits(actions)
-  new_recruits = actions.filter{|a| a[:action] == :create}.map{|action| action[:data]}
-  attachments = new_recruits.map{ |data|
+  new_recruits = actions.filter { |a| a[:action] == :create }.map { |action| action[:data] }
+  attachments = new_recruits.map do |data|
     {
       color: color(data),
       blocks: [
@@ -77,18 +75,11 @@ def notify_recruits(actions)
             text: "*#{data['company']}*\n#{data['title']}\n<#{data['link']}|#{data['link']}>"
           }
         },
-        key_value_pair('種類', data['kind']),
-        key_value_pair('募集開始', data['recruit_start_date']),
-        key_value_pair('締め切り', data['recruit_end_date']),
-        key_value_pair('技術', data['technologies'].gsub("\n", '・')),
-        key_value_pair('場所', data['area'].gsub("\n", '・')),
-        key_value_pair('待遇', data['reward']),
-        key_value_pair('期間1', data['schedule1']),
-        key_value_pair('期間2', data['schedule2']),
-        key_value_pair('期間3', data['schedule3']),
-        key_value_pair('コメント', data['comment'])
+        *CELLS.except('company', 'title', 'link').map do |k, v|
+          key_value_pair(v, data[k])
+        end.compact
       ].compact
     }
-  }
+  end
   SlackNotifier.broadcast(attachments)
 end

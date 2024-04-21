@@ -2,7 +2,6 @@ require './src/config' # Load first
 require './src/logger'
 require './src/firestore'
 require './src/magic'
-require './src/recruit'
 require './src/slack'
 
 COLLECTION_PATH = ENV.fetch('FIRESTORE_COLLECTION_PATH', nil)
@@ -11,7 +10,7 @@ def diff(current, desired)
   actions = []
   desired.each do |recruit|
     key = match_key(recruit)
-    found = current.find{ |r| key <= r.data }
+    found = current.find { |r| key <= r.data }
     if found.nil?
       actions << { data: recruit.to_h, action: :create }
     else
@@ -21,16 +20,12 @@ def diff(current, desired)
   current.each do |recruit|
     actions << { data: recruit.document_id, action: :delete }
   end
-  return actions
+  actions
 end
 
+MATCH_KEYS = %w[title kind company technologies].freeze
 def match_key(recruit)
-  {
-    title: recruit.title,
-    kind: recruit.kind,
-    company: recruit.company,
-    technologies: recruit.technologies
-  }
+  recruit.slice(*MATCH_KEYS)
 end
 
 desired = MagicSpreadsheet.list
@@ -42,7 +37,7 @@ actions = diff(current, desired)
 logger.info("Actions: #{actions}")
 
 # Firestoreに書き込む
-logger.info("Start Firestore.batch")
+logger.info('Start Firestore.batch')
 firestore.batch do |b|
   actions.each do |action|
     if action[:action] == :create
@@ -55,7 +50,5 @@ firestore.batch do |b|
 end
 
 # Slackに通知する
-new_recruits = actions.filter{|a| a[:action] == :create}.map{|action| action[:data]}
-if new_recruits.length > 0
-  notify_recruits(actions)
-end
+new_recruits = actions.filter { |a| a[:action] == :create }.map { |action| action[:data] }
+notify_recruits(actions) if new_recruits.length.positive?
