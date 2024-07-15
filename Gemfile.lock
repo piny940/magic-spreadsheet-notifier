@@ -72,7 +72,7 @@ GEM
     language_server-protocol (3.17.0.3)
     logger (1.6.0)
     multi_json (1.15.0)
-    multipart-post (2.3.0)
+    multipart-post (2.4.1)
     net-http (0.4.1)
       uri
     os (1.1.4)
@@ -114,7 +114,7 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    slack-ruby-client (2.3.0)
+    slack-ruby-client (2.4.0)
       faraday (>= 2.0)
       faraday-mashify
       faraday-multipart
