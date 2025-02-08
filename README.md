@@ -28,8 +28,7 @@ Slack Bot をワークスペースに追加するには[こちら](https://magic
 **SlackApp**
 
 - `.env.sample`に従い環境変数を設定
-- `bundle install`
-- `bundle exec rake`
+- `docker compose up --build`
 
 **Server**  
 SlackApp の認証のためのサーバーです。Echo(Golang)で書かれています。
