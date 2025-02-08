@@ -19,15 +19,16 @@ require './src/logger'
 CELLS = {
   'company' => '主催',
   'title' => 'イベント名',
+  'kind' => '種別',
   'recruit_end_date' => '締め切り',
   'link' => 'リンク',
+  'occupation' => '職種',
   'technologies' => '技術スタック',
   'content' => '内容',
-  'schedule' => '実施時期/待遇',
-  'test' => '選考フロー',
-  'area' => '場所',
-  'recruit_start_date' => '募集開始',
-  'kind' => 'タグ'
+  'schedule' => '実施時期',
+  'requirements' => '募集要件',
+  'reward' => '待遇',
+  'test' => '選考フロー'
 }.freeze
 module MagicSpreadsheet
   ROW_CSS = '.notion-selectable.notion-page-block.notion-collection-item>.notion-table-view-row'.freeze

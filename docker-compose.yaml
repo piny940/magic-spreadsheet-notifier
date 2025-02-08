@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: magic-spread-notification
+    container_name: magic-spread-notification
+    env_file: .env.development

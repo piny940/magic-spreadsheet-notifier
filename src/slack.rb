@@ -33,7 +33,7 @@ module SlackNotifier
 end
 
 def color(data)
-  data['kind'] == 'インターン' ? '#439FE0' : '#36A64F'
+  data['kind'].include?('インターン') ? '#439FE0' : '#36A64F'
 end
 
 def key_value_pair(label, data)
