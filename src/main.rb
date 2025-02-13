@@ -10,7 +10,7 @@ def diff(current, desired)
   actions = []
   desired.each do |recruit|
     key = match_key(recruit)
-    found = current.find { |r| key <= r.transform_keys(&:to_s) }
+    found = current.find { |r| key <= r.fields.transform_keys(&:to_s) }
     if found.nil?
       actions << { data: recruit.to_h, action: :create }
     else
@@ -32,7 +32,7 @@ desired = MagicSpreadsheet.list
 desired = desired.reject { |r| r['title'].nil? || r['title'].empty? || r['company'].nil? || r['company'].empty? }
 
 firestore = Firestore.client
-current = firestore.col(COLLECTION_PATH).get.to_a.map(&:fields)
+current = firestore.col(COLLECTION_PATH).get.to_a
 
 actions = diff(current, desired)
 logger.info("Actions: #{actions}")
