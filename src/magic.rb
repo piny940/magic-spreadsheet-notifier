@@ -49,7 +49,8 @@ module MagicSpreadsheet
           idx = CELLS.keys.index(k)
           cell = row.find_element(:css, ".notion-table-view-cell[data-col-index='#{idx + 1}']")
           if k == 'link' && cell.text != ''
-            item[k] = cell.find_element(:css, 'a').attribute('href')
+            anchors = cell.find_elements(:css, 'a')
+            item[k] = anchors[0].attribute('href') unless anchors.empty?
             next
           end
           item[k] = cell.text
