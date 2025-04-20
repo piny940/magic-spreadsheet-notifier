@@ -47,7 +47,12 @@ module MagicSpreadsheet
         item = {}
         CELLS.each_key do |k|
           idx = CELLS.keys.index(k)
-          cell = row.find_element(:css, ".notion-table-view-cell[data-col-index='#{idx + 1}']")
+          cells = row.find_elements(:css, ".notion-table-view-cell[data-col-index='#{idx + 1}']")
+          if cells.empty?
+            item[k] = "該当する列が見つかりませんでした"
+            next
+          end
+          cell = cells[0]
           if k == 'link' && cell.text != ''
             anchors = cell.find_elements(:css, 'a')
             item[k] = anchors[0].attribute('href') unless anchors.empty?
