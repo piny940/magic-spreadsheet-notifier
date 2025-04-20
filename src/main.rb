@@ -23,13 +23,14 @@ def diff(current, desired)
   actions
 end
 
-MATCH_KEYS = %w[title kind company technologies].freeze
+MATCH_KEYS = %w[title kind company].freeze
 def match_key(recruit)
   recruit.slice(*MATCH_KEYS)
 end
 
 desired = MagicSpreadsheet.list
 desired = desired.reject { |r| r['title'].nil? || r['title'].empty? || r['company'].nil? || r['company'].empty? }
+p desired
 
 firestore = Firestore.client
 current = firestore.col(COLLECTION_PATH).get.to_a

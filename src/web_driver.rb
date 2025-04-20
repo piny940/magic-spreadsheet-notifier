@@ -9,7 +9,7 @@ module WebDriver
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    options.add_argument('--window-size=1280x800')
+    options.add_argument('--window-size=4096x20000')
     ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
     options.add_argument("--user-agent=#{ua}")
 
