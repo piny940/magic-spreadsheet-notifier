@@ -1,11 +1,11 @@
-FROM ruby:3.4.3 as builder
+FROM ruby:3.4.4 as builder
 
 RUN gem install bundler
 COPY Gemfile Gemfile.lock ./
 ENV ENV=production
 RUN ENV=${ENV} bundle install
 
-FROM ruby:3.4.3 as app
+FROM ruby:3.4.4 as app
 
 RUN apt-get update && \
   apt-get install -y \
