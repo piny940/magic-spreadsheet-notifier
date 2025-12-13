@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/firestore v1.20.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/joho/godotenv v1.5.1
-	github.com/labstack/echo/v4 v4.13.4
+	github.com/labstack/echo/v4 v4.14.0
 	github.com/slack-go/slack v0.17.3
 )
 
