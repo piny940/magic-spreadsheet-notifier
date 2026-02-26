@@ -1,6 +1,6 @@
 module server
 
-go 1.24.0
+go 1.25
 
 toolchain go1.26.0
 
@@ -9,7 +9,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.15.1
-	github.com/slack-go/slack v0.17.3
+	github.com/slack-go/slack v0.18.0
 )
 
 require (
