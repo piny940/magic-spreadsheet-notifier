@@ -2,7 +2,7 @@ module server
 
 go 1.25
 
-toolchain go1.26.0
+toolchain go1.26.1
 
 require (
 	cloud.google.com/go/firestore v1.21.0
