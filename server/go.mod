@@ -9,6 +9,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.15.2
+	github.com/labstack/echo/v5 v5.1.1
 	github.com/slack-go/slack v0.23.1
 )
 
